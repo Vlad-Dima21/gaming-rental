@@ -1,6 +1,7 @@
 package com.vladima.gamingrental.controllers;
 
 import com.vladima.gamingrental.dtos.ClientDTO;
+import com.vladima.gamingrental.dtos.ClientResponseDTO;
 import com.vladima.gamingrental.services.ClientService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -17,12 +18,12 @@ public class ClientController {
     private final ClientService clientService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClientDTO> getClientById(@PathVariable @Min(1) Long id) {
+    public ResponseEntity<ClientResponseDTO> getClientById(@PathVariable @Min(1) Long id) {
         return new ResponseEntity<>(clientService.getById(id), HttpStatus.OK);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ClientDTO> createClient(@Valid @RequestBody ClientDTO clientDTO) {
+    public ResponseEntity<ClientResponseDTO> createClient(@Valid @RequestBody ClientDTO clientDTO) {
         return new ResponseEntity<>(clientService.create(clientDTO), HttpStatus.CREATED);
     }
 

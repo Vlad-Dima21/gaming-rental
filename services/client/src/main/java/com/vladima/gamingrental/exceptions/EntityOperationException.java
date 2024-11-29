@@ -17,4 +17,11 @@ public class EntityOperationException extends RuntimeException {
         this.status = status;
         this.fieldName = null;
     }
+
+    public EntityOperationException(String message, String info, HttpStatus status, String fieldName) {
+        super(message);
+        this.extraInfo = info;
+        this.status = status;
+        this.fieldName = fieldName;
+    }
 }

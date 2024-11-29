@@ -1,6 +1,7 @@
 package com.vladima.gamingrental.models;
 
 import com.vladima.gamingrental.dtos.ClientDTO;
+import com.vladima.gamingrental.dtos.ClientResponseDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,7 +38,7 @@ public class Client {
         this.clientPhone = clientPhone;
     }
 
-    public ClientDTO toDTO() {
-        return new ClientDTO(clientName, clientEmail, clientPhone);
+    public ClientResponseDTO toResponse() {
+        return new ClientResponseDTO(clientId, clientName, clientEmail, clientPhone);
     }
 }

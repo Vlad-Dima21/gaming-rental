@@ -1,6 +1,7 @@
 package com.vladima.gamingrental.services;
 
 import com.vladima.gamingrental.dtos.ClientDTO;
+import com.vladima.gamingrental.dtos.ClientResponseDTO;
 import com.vladima.gamingrental.exceptions.EntityOperationException;
 import com.vladima.gamingrental.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,35 +14,37 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository repository;
 
     @Override
-    public ClientDTO getById(Long id) {
+    public ClientResponseDTO getById(Long id) {
         return repository.findById(id).orElseThrow(() ->
                 new EntityOperationException(
                 "Client not found",
                 "Error fetching client with id " + id,
                 HttpStatus.NOT_FOUND
             )
-        ).toDTO();
+        ).toResponse();
     }
 
     @Override
-    public ClientDTO create(ClientDTO clientDTO) {
+    public ClientResponseDTO create(ClientDTO clientDTO) {
         var existingClientEmail = repository.findByClientEmail(clientDTO.getClientEmail());
         var existingClientPhone = repository.findByClientPhone(clientDTO.getClientPhone());
         if (existingClientEmail != null) {
             throw new EntityOperationException(
                     "Client not registered",
                     "Email is already in use",
-                    HttpStatus.CONFLICT
+                    HttpStatus.CONFLICT,
+                    "clientEmail"
             );
         }
         if (existingClientPhone != null) {
             throw new EntityOperationException(
                     "Client not registered",
                     "Phone is already in use",
-                    HttpStatus.CONFLICT
+                    HttpStatus.CONFLICT,
+                    "clientPhone"
             );
         }
-        return repository.save(clientDTO.toModel()).toDTO();
+        return repository.save(clientDTO.toModel()).toResponse();
     }
 
     @Override

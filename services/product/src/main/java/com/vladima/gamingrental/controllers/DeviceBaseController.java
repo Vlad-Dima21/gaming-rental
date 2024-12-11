@@ -31,11 +31,10 @@ public class DeviceBaseController {
             @RequestParam(required = false)  String name,
             @RequestParam(required = false) String producer,
             @RequestParam(required = false) Integer year,
-            @RequestParam(required = false, defaultValue = "false") boolean ifAvailable,
             @RequestParam(required = false, defaultValue = "1") @Min(1) int page,
             @RequestParam(required = false, defaultValue = "asc") SortDirection sort
     ) {
-        return new ResponseEntity<>(deviceBaseService.getFiltered(name, producer, year, ifAvailable, page, sort), HttpStatus.OK);
+        return new ResponseEntity<>(deviceBaseService.getFiltered(name, producer, year, page, sort), HttpStatus.OK);
     }
 
     @GetMapping("/all")

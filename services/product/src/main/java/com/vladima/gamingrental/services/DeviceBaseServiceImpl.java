@@ -30,9 +30,9 @@ public class DeviceBaseServiceImpl implements DeviceBaseService {
     }
 
     @Override
-    public PageableResponseDTO<DeviceBaseResponseDTO> getFiltered(String name, String producer, Integer year, boolean ifAvailable, int page, SortDirection sort) {
+    public PageableResponseDTO<DeviceBaseResponseDTO> getFiltered(String name, String producer, Integer year, int page, SortDirection sort) {
         var pageRequest = PageRequest.of(page - 1, PAGE_SIZE, sort.by("deviceBaseName"));
-        var result = repository.findFiltered(name, producer, year, ifAvailable, pageRequest);
+        var result = repository.findFiltered(name, producer, year, pageRequest);
         return new PageableResponseDTO<>(result.getTotalPages(), result.stream().map(DeviceBase::toResponse).toList());
     }
 

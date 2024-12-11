@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/devices")
 @RequiredArgsConstructor
@@ -34,5 +36,10 @@ public class DeviceBaseController {
             @RequestParam(required = false, defaultValue = "asc") SortDirection sort
     ) {
         return new ResponseEntity<>(deviceBaseService.getFiltered(name, producer, year, ifAvailable, page, sort), HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<DeviceBaseResponseDTO>> getAllDevices() {
+        return ResponseEntity.ok(deviceBaseService.getAll());
     }
 }

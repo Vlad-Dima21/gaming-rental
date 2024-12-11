@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class DeviceBaseServiceImpl implements DeviceBaseService {
@@ -32,5 +34,10 @@ public class DeviceBaseServiceImpl implements DeviceBaseService {
         var pageRequest = PageRequest.of(page - 1, PAGE_SIZE, sort.by("deviceBaseName"));
         var result = repository.findFiltered(name, producer, year, ifAvailable, pageRequest);
         return new PageableResponseDTO<>(result.getTotalPages(), result.stream().map(DeviceBase::toResponse).toList());
+    }
+
+    @Override
+    public List<DeviceBaseResponseDTO> getAll() {
+        return repository.findAll().stream().map(DeviceBase::toResponse).toList();
     }
 }

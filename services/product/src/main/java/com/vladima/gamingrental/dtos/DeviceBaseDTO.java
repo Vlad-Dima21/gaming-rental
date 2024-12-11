@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class DeviceBaseDTO {
+    private Long deviceBaseId;
     private String deviceBaseName;
     private String deviceBaseProducer;
     private int deviceBaseYearOfRelease;

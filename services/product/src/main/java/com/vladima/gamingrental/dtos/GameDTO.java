@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class GameDTO {
+    private Long gameId;
     private String gameName;
     private String gameGenre;
 }

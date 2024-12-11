@@ -21,9 +21,6 @@ public class Device {
     @Column(nullable = false)
     private int deviceNumberOfControllers;
 
-    @Column(nullable = false, name = "device_is_available")
-    private boolean deviceAvailable = true;
-
     @ManyToOne(optional = false)
     @JoinColumn(name = "device_base_id")
     private DeviceBase deviceBase;
@@ -32,8 +29,7 @@ public class Device {
         return new DeviceResponseDTO(
                 deviceId,
                 deviceBase.getDeviceBaseId(),
-                deviceNumberOfControllers,
-                deviceAvailable
+                deviceNumberOfControllers
         );
     }
 }

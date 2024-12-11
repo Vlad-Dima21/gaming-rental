@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class GameCopyResponseDTO {
+    private Long gameCopyId;
     private GameDTO gameBase;
-    private DeviceBaseResponseDTO gameDevice;
+    private DeviceBaseDTO gameDevice;
 }

@@ -13,5 +13,4 @@ public class DeviceResponseDTO {
     private Long deviceId;
     private Long deviceBaseId;
     private int deviceNumberOfControllers;
-    private boolean deviceIsAvailable;
 }

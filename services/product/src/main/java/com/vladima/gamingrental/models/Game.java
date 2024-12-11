@@ -1,5 +1,6 @@
 package com.vladima.gamingrental.models;
 
+import com.vladima.gamingrental.dtos.GameDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,4 +41,7 @@ public class Game {
         this.gameCopies = gameCopies;
     }
 
+    public GameDTO toDTO() {
+        return new GameDTO(gameId, gameName, gameGenre);
+    }
 }

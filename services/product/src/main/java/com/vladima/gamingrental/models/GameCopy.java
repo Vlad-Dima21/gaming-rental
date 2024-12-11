@@ -1,12 +1,11 @@
 package com.vladima.gamingrental.models;
 
+import com.vladima.gamingrental.dtos.GameCopyResponseDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @EqualsAndHashCode
 @AllArgsConstructor
@@ -20,9 +19,6 @@ public class GameCopy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long gameCopyId;
 
-    @Column(nullable = false)
-    private boolean isAvailable = true;
-
     @ManyToOne(optional = false)
     @JoinColumn(name = "game_id")
     private Game gameBase;
@@ -31,10 +27,7 @@ public class GameCopy {
     @JoinColumn(name = "device_base_id")
     private DeviceBase gameDevice;
 
-
-    public GameCopy(Game gameBase, DeviceBase gameDevice, boolean isAvailable) {
-        this.isAvailable = isAvailable;
-        this.gameBase = gameBase;
-        this.gameDevice = gameDevice;
+    public GameCopyResponseDTO toResponse() {
+        return new GameCopyResponseDTO(gameCopyId, gameBase.toDTO(), gameDevice.toResponse());
     }
 }

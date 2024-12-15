@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/client
+    url: jdbc:postgresql://localhost:5432/rental
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -13,4 +13,9 @@ spring:
     init:
       mode: always
 server:
-  port: 8090
+  port: 8070
+
+application:
+  config:
+    client-url: http://localhost:8222/api
+    product-url: http://localhost:8222/api

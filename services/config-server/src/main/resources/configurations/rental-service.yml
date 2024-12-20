@@ -17,5 +17,6 @@ server:
 
 application:
   config:
-    client-url: http://localhost:8222/api
-    product-url: http://localhost:8222/api
+    client-url: http://localhost:8222/api/clients
+    device-url: http://localhost:8222/api/units
+    game-url: http://localhost:8222/api/games

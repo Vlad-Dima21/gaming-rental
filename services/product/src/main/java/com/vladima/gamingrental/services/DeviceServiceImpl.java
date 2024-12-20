@@ -18,6 +18,15 @@ public class DeviceServiceImpl implements DeviceService {
     private final DeviceRepository repository;
 
     @Override
+    public DeviceResponseDTO getById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new EntityOperationException(
+                "Device not found",
+                MessageFormat.format("No such device as {0}", id),
+                HttpStatus.NOT_FOUND
+        )).toResponse();
+    }
+
+    @Override
     public List<DeviceResponseDTO> getByDeviceBaseId(Long id) {
         return repository.findByDeviceBaseId(id)
                 .stream()

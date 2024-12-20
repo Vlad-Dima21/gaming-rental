@@ -16,10 +16,17 @@ import java.util.List;
 public class DeviceController {
     private final DeviceService deviceService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/of-id/{id}")
     public ResponseEntity<List<DeviceResponseDTO>> getByDeviceBaseId(
             @PathVariable @Min(1) Long id
     ) {
         return new ResponseEntity<>(deviceService.getByDeviceBaseId(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DeviceResponseDTO> getById(
+            @PathVariable @Min(1) Long id
+    ) {
+        return new ResponseEntity<>(deviceService.getById(id), HttpStatus.OK);
     }
 }

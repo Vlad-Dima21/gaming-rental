@@ -16,9 +16,9 @@ public class RentalResponseDTO {
     private Long rentalId;
     private LocalDateTime rentalDueDate;
     private LocalDateTime rentalReturnDate;
-    private ClientDTO rentalClient;
-    private DeviceDTO rentalDevice;
-    private List<GameCopyDTO> rentalGames;
+    private Long rentalClientId;
+    private Long rentalDeviceId;
+    private List<Long> rentalGameCopyIds;
 }
 
 //https://youtu.be/jdeSV0GRvwI?t=10802

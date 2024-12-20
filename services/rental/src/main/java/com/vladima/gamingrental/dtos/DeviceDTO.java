@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class DeviceDTO {
+    private Long deviceId;
     private int deviceNumberOfControllers;
     private boolean deviceIsAvailable;
 }

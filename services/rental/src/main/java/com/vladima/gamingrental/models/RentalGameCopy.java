@@ -20,4 +20,13 @@ public class RentalGameCopy {
     @ManyToOne
     @JoinColumn(name = "rental_id")
     private Rental rental;
+
+    public RentalGameCopy(Rental rental, Long gameCopyId) {
+        this.rentalGameCopyId = new RentalGameCopyId(rental.getRentalId(), gameCopyId);
+        this.rental = rental;
+    }
+
+    public Long getGameCopyId() {
+        return rentalGameCopyId.getGameCopyId();
+    }
 }

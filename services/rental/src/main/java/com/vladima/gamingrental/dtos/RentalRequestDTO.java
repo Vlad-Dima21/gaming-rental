@@ -19,6 +19,9 @@ import java.util.List;
 public class RentalRequestDTO {
 
     @NotNull
+    private Long clientId;
+
+    @NotNull
     private Long deviceUnitId;
 
     private List<Long> gameCopiesId = new ArrayList<>();

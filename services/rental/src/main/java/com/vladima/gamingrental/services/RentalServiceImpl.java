@@ -12,7 +12,6 @@ import com.vladima.gamingrental.helpers.PageableResponseDTO;
 import com.vladima.gamingrental.helpers.SortDirection;
 import com.vladima.gamingrental.models.Rental;
 import com.vladima.gamingrental.models.RentalGameCopy;
-import com.vladima.gamingrental.models.RentalGameCopyId;
 import com.vladima.gamingrental.repositories.RentalRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +48,7 @@ public class RentalServiceImpl implements RentalService {
 
     private DeviceDTO getDeviceById(Long deviceId) {
         var device = deviceClient.getDeviceById(deviceId);
-        if (device.getStatusCode() != HttpStatusCode.valueOf(200)) {
+        if (device.getStatusCode().isError()) {
             throw new EntityOperationException(
                     "Device not found",
                     MessageFormat.format("No such device with id {0}", deviceId),
@@ -61,7 +60,7 @@ public class RentalServiceImpl implements RentalService {
 
     private void getGameCopies(Long deviceUnitId, List<Long> gameCopiesId) {
         var gameCopies = gameCopyClient.getGameCopies(deviceUnitId);
-        if (gameCopies.getStatusCode() != HttpStatusCode.valueOf(200)) {
+        if (gameCopies.getStatusCode().isError()) {
             throw new EntityOperationException(
                     "Game copies not found",
                     MessageFormat.format("No such game copies for device unit with id {0}", deviceUnitId),
@@ -83,8 +82,8 @@ public class RentalServiceImpl implements RentalService {
     @Override
     public PageableResponseDTO<RentalResponseDTO> getRentals(Long clientId, Long deviceId, Boolean returned, boolean pastDue, Integer page, SortDirection sort) {
         var pageRequest = PageRequest.of(page != null ? page - 1 : 0, PAGE_SIZE);
-        var client = getClientById(clientId);
-        var device = getDeviceById(deviceId);
+        getClientById(clientId);
+        getDeviceById(deviceId);
         pageRequest = sort != null ? pageRequest.withSort(sort.by("rentalReturnDate")): pageRequest;
         var rentals = repository.getRentals(clientId, deviceId, returned, pastDue, pageRequest);
         return new PageableResponseDTO<>(rentals.getTotalPages(), rentals.map(Rental::toResponseDTO).toList());

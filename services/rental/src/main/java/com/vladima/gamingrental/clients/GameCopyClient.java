@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "product-service", url = "${application.config.game-url}")
+@FeignClient(name = "game-client", url = "${application.config.game-url}")
 public interface GameCopyClient {
     @GetMapping
     ResponseEntity<List<GameCopyDTO>> getGameCopies(@RequestParam Long deviceId);

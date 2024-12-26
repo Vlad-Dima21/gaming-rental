@@ -1,0 +1,23 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: client-service
+          uri: lb:http://CLIENT-SERVICE
+          predicates:
+            - Path=/api/clients/**
+        - id: products-service
+          uri: lb:http://PRODUCTS-SERVICE
+          predicates:
+            - Path=/api/devices/**
+            - Path=/api/units/**
+            - Path=/api/games/**
+        - id: rental-service
+          uri: lb:http://RENTAL-SERVICE
+          predicates:
+            - Path=/api/rentals/**
+server:
+  port: 8222

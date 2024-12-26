@@ -11,6 +11,7 @@
         <module name="client" />
         <module name="product" />
         <module name="discovery" />
+        <module name="gateway" />
         <module name="rental" />
       </profile>
     </annotationProcessing>
@@ -23,6 +24,7 @@
       <module name="client" options="-parameters" />
       <module name="config-server" options="-parameters" />
       <module name="discovery" options="-parameters" />
+      <module name="gateway" options="-parameters" />
       <module name="product" options="-parameters" />
       <module name="products" options="-parameters" />
       <module name="rental" options="-parameters" />

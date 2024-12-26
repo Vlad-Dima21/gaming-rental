@@ -8,16 +8,14 @@ spring:
         - id: client-service
           uri: lb:http://CLIENT-SERVICE
           predicates:
-            - Path=/api/clients/**
+            - Path=/api/clients/**, /swagger-ui.html, /swagger-ui/**
         - id: products-service
           uri: lb:http://PRODUCTS-SERVICE
           predicates:
-            - Path=/api/devices/**
-            - Path=/api/units/**
-            - Path=/api/games/**
+            - Path=/api/devices/**, /api/units/**, /api/games/**, /swagger-ui.html, /swagger-ui/**
         - id: rental-service
           uri: lb:http://RENTAL-SERVICE
           predicates:
-            - Path=/api/rentals/**
+            - Path=/api/rentals/**, /swagger-ui.html, /swagger-ui/**
 server:
   port: 8222

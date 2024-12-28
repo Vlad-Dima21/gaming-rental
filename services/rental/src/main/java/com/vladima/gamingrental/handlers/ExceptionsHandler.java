@@ -1,6 +1,11 @@
 package com.vladima.gamingrental.handlers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladima.gamingrental.exceptions.EntityOperationException;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
@@ -9,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -22,6 +28,18 @@ public class ExceptionsHandler {
     @AllArgsConstructor
     public static class ExceptionFormat {
         String message, details, fieldName;
+    }
+
+    @ExceptionHandler({FeignException.class})
+    public ResponseEntity<Map<String, String>> feignException(FeignException e) {
+        Map<String, String> json = new HashMap<>();
+        try {
+            json = new ObjectMapper().readValue(e.contentUTF8(), new TypeReference<>() {
+            });
+            return new ResponseEntity<>(json, HttpStatus.valueOf(e.status()));
+        } catch (JsonProcessingException ex) {
+            return new ResponseEntity<>(json, HttpStatus.valueOf(e.status()));
+        }
     }
 
     @ExceptionHandler({EntityOperationException.class})
@@ -38,6 +56,18 @@ public class ExceptionsHandler {
         Map<String, String> response = new HashMap<>();
         String fieldName = e.getBindingResult().getFieldError().getField();
         String fieldMessage = e.getBindingResult().getFieldError().getDefaultMessage();
+        response.put("details", MessageFormat.format("Invalid value for {0}", getReadableName(fieldName)));
+        response.put("message", fieldMessage);
+        response.put("fieldName", fieldName);
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<Map<String, String>> operationException(MethodArgumentTypeMismatchException e) {
+        Map<String, String> response = new HashMap<>();
+        String fieldName = e.getPropertyName();
+        String fieldMessage = MessageFormat.format("Invalid {0}", fieldName);
         response.put("details", MessageFormat.format("Invalid value for {0}", getReadableName(fieldName)));
         response.put("message", fieldMessage);
         response.put("fieldName", fieldName);

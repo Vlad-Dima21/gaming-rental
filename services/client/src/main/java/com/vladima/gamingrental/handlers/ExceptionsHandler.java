@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -30,6 +31,18 @@ public class ExceptionsHandler {
         Map<String, String> response = new HashMap<>();
         String fieldName = e.getBindingResult().getFieldError().getField();
         String fieldMessage = e.getBindingResult().getFieldError().getDefaultMessage();
+        response.put("details", MessageFormat.format("Invalid value for {0}", getReadableName(fieldName)));
+        response.put("message", fieldMessage);
+        response.put("fieldName", fieldName);
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<Map<String, String>> operationException(MethodArgumentTypeMismatchException e) {
+        Map<String, String> response = new HashMap<>();
+        String fieldName = e.getPropertyName();
+        String fieldMessage = MessageFormat.format("Invalid {0}", fieldName);
         response.put("details", MessageFormat.format("Invalid value for {0}", getReadableName(fieldName)));
         response.put("message", fieldMessage);
         response.put("fieldName", fieldName);

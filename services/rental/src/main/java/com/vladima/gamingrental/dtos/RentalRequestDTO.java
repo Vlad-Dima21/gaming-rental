@@ -26,6 +26,7 @@ public class RentalRequestDTO {
 
     private List<Long> gameCopiesId = new ArrayList<>();
 
+    @NotNull
     @Range(min = 30, max = 90, message = "Products can be rented for one to three months")
     private Long numberOfDays;
 }

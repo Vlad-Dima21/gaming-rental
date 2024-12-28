@@ -49,14 +49,14 @@ public class RentalController {
     })
     @GetMapping
     public ResponseEntity<PageableResponseDTO<RentalResponseDTO>> getRentals(
-//            Authentication authentication,
+            @RequestParam(required = false) @Parameter(description = "Client Id") Long  clientId,
             @RequestParam(required = false) @Parameter(description = "Device Id") Long  deviceId,
             @RequestParam(required = false) @Parameter(description = "Rental is returned") Boolean returned,
             @RequestParam(defaultValue = "false") @Parameter(description = "Only rentals that are past due") boolean pastDue,
             @RequestParam(required = false) @Parameter(description = "Page number") @Min(1) Integer page,
             @RequestParam(required = false) @Parameter(description = "Sort by return date") SortDirection sort
     ) {
-        return new ResponseEntity<>(rentalService.getRentals(/*todo change this authentication.getName()*/-1L, deviceId, returned, pastDue, page, sort), HttpStatus.OK);
+        return new ResponseEntity<>(rentalService.getRentals(clientId, deviceId, returned, pastDue, page, sort), HttpStatus.OK);
     }
 
     @Operation(summary = "Register a new rental")
@@ -88,10 +88,9 @@ public class RentalController {
     })
     @PostMapping("/create")
     public ResponseEntity<RentalResponseDTO> createRental(
-//            Authentication authentication,
             @Valid @RequestBody RentalRequestDTO rentalRequestDTO
     ) {
-        return new ResponseEntity<>(rentalService.createRental(/*todo change this authentication.getName()*/-1L, rentalRequestDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(rentalService.createRental(rentalRequestDTO), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Register rental return")

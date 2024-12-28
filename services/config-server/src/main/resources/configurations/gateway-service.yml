@@ -9,8 +9,8 @@ spring:
           uri: lb:http://CLIENT-SERVICE
           predicates:
             - Path=/api/clients/**, /swagger-ui.html, /swagger-ui/**
-        - id: products-service
-          uri: lb:http://PRODUCTS-SERVICE
+        - id: product-service
+          uri: lb:http://PRODUCT-SERVICE
           predicates:
             - Path=/api/devices/**, /api/units/**, /api/games/**, /swagger-ui.html, /swagger-ui/**
         - id: rental-service

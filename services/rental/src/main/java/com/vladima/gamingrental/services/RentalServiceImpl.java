@@ -3,8 +3,6 @@ package com.vladima.gamingrental.services;
 import com.vladima.gamingrental.clients.ClientClient;
 import com.vladima.gamingrental.clients.DeviceClient;
 import com.vladima.gamingrental.clients.GameCopyClient;
-import com.vladima.gamingrental.dtos.ClientDTO;
-import com.vladima.gamingrental.dtos.DeviceDTO;
 import com.vladima.gamingrental.dtos.RentalRequestDTO;
 import com.vladima.gamingrental.dtos.RentalResponseDTO;
 import com.vladima.gamingrental.exceptions.EntityOperationException;
@@ -17,7 +15,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
@@ -34,19 +31,19 @@ public class RentalServiceImpl implements RentalService {
     private final DeviceClient deviceClient;
     private final GameCopyClient gameCopyClient;
 
-    private ClientDTO getClientById(Long clientId) {
+    private void getClientById(Long clientId) {
         var client = clientClient.getClientById(clientId);
-        if (client.getStatusCode() != HttpStatusCode.valueOf(200)) {
+        if (client.getStatusCode().isError()) {
             throw new EntityOperationException(
                     "Client not found",
                     MessageFormat.format("No such client with id {0}", clientId),
                     HttpStatus.NOT_FOUND
             );
         }
-        return client.getBody();
+        client.getBody();
     }
 
-    private DeviceDTO getDeviceById(Long deviceId) {
+    private void getDeviceById(Long deviceId) {
         var device = deviceClient.getDeviceById(deviceId);
         if (device.getStatusCode().isError()) {
             throw new EntityOperationException(
@@ -55,7 +52,7 @@ public class RentalServiceImpl implements RentalService {
                     HttpStatus.NOT_FOUND
             );
         }
-        return device.getBody();
+        device.getBody();
     }
 
     private void getGameCopies(Long deviceUnitId, List<Long> gameCopiesId) {
@@ -90,10 +87,17 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public RentalResponseDTO createRental(Long clientId, RentalRequestDTO rental) {
-        getClientById(clientId);
+    public RentalResponseDTO createRental(RentalRequestDTO rental) {
+        getClientById(rental.getClientId());
         getDeviceById(rental.getDeviceUnitId());
         getGameCopies(rental.getDeviceUnitId(), rental.getGameCopiesId());
+        if (!repository.isDeviceAvailable(rental.getDeviceUnitId())) {
+            throw new EntityOperationException(
+                "Device unit not available",
+                "",
+                HttpStatus.BAD_REQUEST
+            );
+        }
         var conflictCopies = repository.getUnavailableGameCopyIds(rental.getDeviceUnitId(), rental.getGameCopiesId());
         if (!conflictCopies.isEmpty()) {
             throw new EntityOperationException(
@@ -104,7 +108,7 @@ public class RentalServiceImpl implements RentalService {
         }
 
         var rentalEntity = new Rental(
-                clientId,
+                rental.getClientId(),
                 rental.getDeviceUnitId(),
                 LocalDateTime.now().plusDays(rental.getNumberOfDays())
         );

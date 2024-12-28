@@ -18,10 +18,20 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
             Long clientId, Long deviceId, Boolean returned, boolean pastDue, PageRequest pageRequest
     );
 
-    @Query("SELECT rgc.copies.rentalGameCopyId.gameCopyId " +
-            "FROM (" +
-            "   SELECT r.rentalGameCopies AS copies FROM Rental r WHERE r.rentalReturnDate IS NULL AND r.rentalDeviceId = :deviceId" +
-            ") rgc " +
-            "WHERE rgc.copies.rentalGameCopyId.gameCopyId IN :gameCopyIds")
+    @Query("""
+            SELECT rgc.rentalGameCopyId.gameCopyId \
+            FROM Rental r \
+               JOIN RentalGameCopy rgc ON r.rentalId = rgc.rentalGameCopyId.rentalId \
+            WHERE rgc.rentalGameCopyId.gameCopyId IN :gameCopyIds \
+                AND r.rentalDeviceId = :deviceId \
+                AND r.rentalReturnDate IS NULL""")
+//    @Query("SELECT UNNEST(rgc.copies.rentalGameCopyId.gameCopyId) " +
+//            "FROM (" +
+//            "   SELECT r.rentalGameCopies AS copies FROM Rental r WHERE r.rentalReturnDate IS NULL AND r.rentalDeviceId = :deviceId" +
+//            ") rgc " +
+//            "WHERE rgc.copies.rentalGameCopyId.gameCopyId IN :gameCopyIds")
     List<Long> getUnavailableGameCopyIds(Long deviceId, List<Long> gameCopyIds);
+
+    @Query("SELECT NOT EXISTS(SELECT r.rentalDeviceId FROM Rental r WHERE r.rentalDeviceId = :deviceId AND r.rentalReturnDate IS NULL)")
+    Boolean isDeviceAvailable(Long deviceId);
 }

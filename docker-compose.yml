@@ -1,4 +1,11 @@
 services:
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    networks:
+      - microservices-net
   postgres:
     container_name: ms-pg-sql
     image: postgres

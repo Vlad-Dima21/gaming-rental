@@ -3,6 +3,7 @@ package com.vladima.gamingrental.controllers;
 import com.vladima.gamingrental.dtos.ClientDTO;
 import com.vladima.gamingrental.dtos.ClientResponseDTO;
 import com.vladima.gamingrental.services.ClientService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/clients")
 @RequiredArgsConstructor
+@RateLimiter(name = "clientControllerLimiter")
 public class ClientController {
     private final ClientService clientService;
 

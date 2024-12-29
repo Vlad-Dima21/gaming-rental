@@ -2,6 +2,7 @@ package com.vladima.gamingrental.controllers;
 
 import com.vladima.gamingrental.dtos.GameCopyResponseDTO;
 import com.vladima.gamingrental.services.GameCopyService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/games")
 @RequiredArgsConstructor
+@RateLimiter(name = "gameCopyControllerLimiter")
 public class GameCopyController {
     private final GameCopyService gameCopyService;
 

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladima.gamingrental.exceptions.EntityOperationException;
 import feign.FeignException;
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -41,6 +43,10 @@ public class ExceptionsHandler {
             return new ResponseEntity<>(json, HttpStatus.valueOf(e.status()));
         }
     }
+
+    @ExceptionHandler({ RequestNotPermitted.class })
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public void handleRequestNotPermitted() {}
 
     @ExceptionHandler({EntityOperationException.class})
     public ResponseEntity<Map<String, String>> operationException(EntityOperationException e) {

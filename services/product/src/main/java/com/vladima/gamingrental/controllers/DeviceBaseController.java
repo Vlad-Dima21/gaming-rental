@@ -4,6 +4,7 @@ import com.vladima.gamingrental.dtos.DeviceBaseResponseDTO;
 import com.vladima.gamingrental.helpers.PageableResponseDTO;
 import com.vladima.gamingrental.helpers.SortDirection;
 import com.vladima.gamingrental.services.DeviceBaseService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/devices")
 @RequiredArgsConstructor
+@RateLimiter(name = "deviceBaseControllerLimiter")
 public class DeviceBaseController {
     private final DeviceBaseService deviceBaseService;
 

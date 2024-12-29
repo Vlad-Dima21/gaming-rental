@@ -79,8 +79,8 @@ public class RentalServiceImpl implements RentalService {
     @Override
     public PageableResponseDTO<RentalResponseDTO> getRentals(Long clientId, Long deviceId, Boolean returned, boolean pastDue, Integer page, SortDirection sort) {
         var pageRequest = PageRequest.of(page != null ? page - 1 : 0, PAGE_SIZE);
-        getClientById(clientId);
-        getDeviceById(deviceId);
+        if (clientId != null) getClientById(clientId);
+        if (deviceId != null) getDeviceById(deviceId);
         pageRequest = sort != null ? pageRequest.withSort(sort.by("rentalReturnDate")): pageRequest;
         var rentals = repository.getRentals(clientId, deviceId, returned, pastDue, pageRequest);
         return new PageableResponseDTO<>(rentals.getTotalPages(), rentals.map(Rental::toResponseDTO).toList());

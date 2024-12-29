@@ -1,11 +1,13 @@
 package com.vladima.gamingrental.handlers;
 
 import com.vladima.gamingrental.exceptions.EntityOperationException;
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -16,6 +18,10 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class ExceptionsHandler {
+
+    @ExceptionHandler({ RequestNotPermitted.class })
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public void handleRequestNotPermitted() {}
 
     @ExceptionHandler({EntityOperationException.class})
     public ResponseEntity<Map<String, String>> operationException(EntityOperationException e) {

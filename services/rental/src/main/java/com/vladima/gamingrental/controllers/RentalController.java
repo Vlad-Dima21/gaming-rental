@@ -7,6 +7,7 @@ import com.vladima.gamingrental.handlers.ExceptionsHandler;
 import com.vladima.gamingrental.helpers.PageableResponseDTO;
 import com.vladima.gamingrental.helpers.SortDirection;
 import com.vladima.gamingrental.services.RentalService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/rentals")
 @RequiredArgsConstructor
+@RateLimiter(name = "rentalControllerLimiter")
 public class RentalController {
     private final RentalService rentalService;
 

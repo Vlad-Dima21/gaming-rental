@@ -20,3 +20,9 @@ application:
     client-url: http://localhost:8222/api/clients
     device-url: http://localhost:8222/api/units
     game-url: http://localhost:8222/api/games
+
+resilience4j:
+  ratelimiter:
+    instances:
+      rentalControllerLimiter:
+        baseConfig: default

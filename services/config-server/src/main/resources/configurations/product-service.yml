@@ -14,3 +14,13 @@ spring:
       mode: always
 server:
   port: 8050
+
+resilience4j:
+  ratelimiter:
+    instances:
+      deviceBaseControllerLimiter:
+        baseConfig: default
+      deviceControllerLimiter:
+        baseConfig: default
+      gameCopyControllerLimiter:
+        baseConfig: default

@@ -2,6 +2,7 @@ package com.vladima.gamingrental.controllers;
 
 import com.vladima.gamingrental.dtos.DeviceResponseDTO;
 import com.vladima.gamingrental.services.DeviceService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/units")
 @RequiredArgsConstructor
+@RateLimiter(name = "deviceControllerLimiter")
 public class DeviceController {
     private final DeviceService deviceService;
 

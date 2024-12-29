@@ -12,3 +12,16 @@ management:
   tracing:
     sampling:
       probability: 1.0
+
+resilience4j:
+  ratelimiter:
+    metrics:
+      enabled: true
+    configs:
+      default:
+        limit-for-period: 5
+        limit-refresh-period: 10s
+        timeout-duration: 0s
+        allow-health-indicator-to-fail: true
+        subscribe-for-events: true
+        event-consumer-buffer-size: 50

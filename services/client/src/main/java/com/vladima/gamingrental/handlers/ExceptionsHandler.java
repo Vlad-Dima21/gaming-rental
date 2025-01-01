@@ -2,6 +2,8 @@ package com.vladima.gamingrental.handlers;
 
 import com.vladima.gamingrental.exceptions.EntityOperationException;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,12 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class ExceptionsHandler {
+
+    @Data
+    @AllArgsConstructor
+    public static class ExceptionFormat {
+        String message, details, fieldName;
+    }
 
     @ExceptionHandler({ RequestNotPermitted.class })
     @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)

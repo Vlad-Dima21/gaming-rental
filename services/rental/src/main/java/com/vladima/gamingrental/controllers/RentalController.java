@@ -23,6 +23,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/rentals")
 @RequiredArgsConstructor
@@ -30,13 +32,18 @@ import org.springframework.web.bind.annotation.*;
 public class RentalController {
     private final RentalService rentalService;
 
+    private static class OpenAPIPageableResponseDTO {
+        int totalPages;
+        List<RentalResponseDTO> items;
+    }
+
     @Operation(summary = "Get filtered rentals")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = RentalResponseDTO.class))
+                            array = @ArraySchema(schema = @Schema(implementation = OpenAPIPageableResponseDTO.class))
                     ),
                     description = "Valid filters and rentals found"
             ),

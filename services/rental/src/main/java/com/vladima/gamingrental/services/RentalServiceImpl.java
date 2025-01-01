@@ -11,6 +11,7 @@ import com.vladima.gamingrental.helpers.SortDirection;
 import com.vladima.gamingrental.models.Rental;
 import com.vladima.gamingrental.models.RentalGameCopy;
 import com.vladima.gamingrental.repositories.RentalRepository;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -77,6 +78,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    @TimeLimiter(name = "rentalTimeLimiter")
     public PageableResponseDTO<RentalResponseDTO> getRentals(Long clientId, Long deviceId, Boolean returned, boolean pastDue, Integer page, SortDirection sort) {
         var pageRequest = PageRequest.of(page != null ? page - 1 : 0, PAGE_SIZE);
         if (clientId != null) getClientById(clientId);
@@ -87,6 +89,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    @TimeLimiter(name = "rentalTimeLimiter")
     public RentalResponseDTO createRental(RentalRequestDTO rental) {
         getClientById(rental.getClientId());
         getDeviceById(rental.getDeviceUnitId());

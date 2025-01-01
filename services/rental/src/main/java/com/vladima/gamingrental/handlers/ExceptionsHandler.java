@@ -22,6 +22,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 @RestControllerAdvice
 public class ExceptionsHandler {
@@ -47,6 +48,11 @@ public class ExceptionsHandler {
     @ExceptionHandler({ RequestNotPermitted.class })
     @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
     public void handleRequestNotPermitted() {}
+
+    @ExceptionHandler({TimeoutException.class})
+    @ResponseStatus(HttpStatus.REQUEST_TIMEOUT)
+    public void handleTimeoutException() {
+    }
 
     @ExceptionHandler({EntityOperationException.class})
     public ResponseEntity<Map<String, String>> operationException(EntityOperationException e) {

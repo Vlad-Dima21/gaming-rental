@@ -26,3 +26,7 @@ resilience4j:
     instances:
       rentalControllerLimiter:
         baseConfig: default
+  time-limiter:
+    instances:
+      rentalTimeLimiter:
+        baseConfig: default

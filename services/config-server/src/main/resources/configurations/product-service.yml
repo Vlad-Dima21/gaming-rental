@@ -24,3 +24,14 @@ resilience4j:
         baseConfig: default
       gameCopyControllerLimiter:
         baseConfig: default
+
+openapi:
+  title: Product Service API
+  description: Product Service API docs.
+  version: 1.0.0
+  url: http://localhost:${server.port}
+springdoc:
+  api-docs:
+    path: /product-service/v3/api-docs
+  swagger-ui:
+    path: /product-service/swagger-ui.html

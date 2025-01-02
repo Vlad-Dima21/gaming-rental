@@ -3,3 +3,23 @@ spring:
     import: optional:configserver:http://localhost:8888
   application:
     name: gateway-service
+
+server:
+  servlet:
+    context-path: /
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: API Gateway Service
+      - url: /client-service/v3/api-docs
+        name: Client Service
+      - url: /product-service/v3/api-docs
+        name: Product Service
+      - url: /rental-service/v3/api-docs
+        name: Rental Service

@@ -14,9 +14,22 @@ spring:
       mode: always
 server:
   port: 8090
+  servlet:
+    context-path: /
 
 resilience4j:
   ratelimiter:
     instances:
       clientControllerLimiter:
         baseConfig: default
+
+openapi:
+  title: Client Service API
+  description: Client Service API docs.
+  version: 1.0.0
+  url: http://localhost:{server.port}
+springdoc:
+  api-docs:
+    path: /client-service/v3/api-docs
+  swagger-ui:
+    path: /client-service/swagger-ui.html

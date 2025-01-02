@@ -30,3 +30,14 @@ resilience4j:
     instances:
       rentalTimeLimiter:
         baseConfig: default
+
+openapi:
+  title: Rental Service API
+  description: Rental Service API docs.
+  version: 1.0.0
+  url: http://localhost:{server.port}
+springdoc:
+  api-docs:
+    path: /rental-service/v3/api-docs
+  swagger-ui:
+    path: /rental-service/swagger-ui.html

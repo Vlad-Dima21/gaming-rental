@@ -4,15 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RentalResponseDTO {
+public class RentalResponseDTO extends RepresentationModel<RentalResponseDTO> {
     private Long rentalId;
     private LocalDateTime rentalDueDate;
     private LocalDateTime rentalReturnDate;

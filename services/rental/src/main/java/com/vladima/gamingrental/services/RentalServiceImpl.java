@@ -3,6 +3,7 @@ package com.vladima.gamingrental.services;
 import com.vladima.gamingrental.clients.ClientClient;
 import com.vladima.gamingrental.clients.DeviceClient;
 import com.vladima.gamingrental.clients.GameCopyClient;
+import com.vladima.gamingrental.controllers.RentalController;
 import com.vladima.gamingrental.dtos.RentalRequestDTO;
 import com.vladima.gamingrental.dtos.RentalResponseDTO;
 import com.vladima.gamingrental.exceptions.EntityOperationException;
@@ -21,6 +22,9 @@ import org.springframework.stereotype.Service;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 @RequiredArgsConstructor
@@ -78,18 +82,19 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    @TimeLimiter(name = "rentalTimeLimiter")
     public PageableResponseDTO<RentalResponseDTO> getRentals(Long clientId, Long deviceId, Boolean returned, boolean pastDue, Integer page, SortDirection sort) {
         var pageRequest = PageRequest.of(page != null ? page - 1 : 0, PAGE_SIZE);
         if (clientId != null) getClientById(clientId);
         if (deviceId != null) getDeviceById(deviceId);
         pageRequest = sort != null ? pageRequest.withSort(sort.by("rentalReturnDate")): pageRequest;
         var rentals = repository.getRentals(clientId, deviceId, returned, pastDue, pageRequest);
-        return new PageableResponseDTO<>(rentals.getTotalPages(), rentals.map(Rental::toResponseDTO).toList());
+        return new PageableResponseDTO<>(rentals.getTotalPages(), rentals.map(rental -> {
+            var returnLink = rental.getRentalReturnDate() == null ? linkTo(methodOn(RentalController.class).returnRental(rental.getRentalId())).withRel("return") : null;
+            return returnLink != null ? rental.toResponseDTO().add(returnLink) : rental.toResponseDTO();
+        }).toList());
     }
 
     @Override
-    @TimeLimiter(name = "rentalTimeLimiter")
     public RentalResponseDTO createRental(RentalRequestDTO rental) {
         getClientById(rental.getClientId());
         getDeviceById(rental.getDeviceUnitId());
@@ -118,7 +123,9 @@ public class RentalServiceImpl implements RentalService {
         rentalEntity.setRentalGameCopies(
             rental.getGameCopiesId().stream().map(gameCopyId -> new RentalGameCopy(rentalEntity, gameCopyId)).toList()
         );
-        return repository.save(rentalEntity).toResponseDTO();
+
+        var returnLink = linkTo(methodOn(RentalController.class).returnRental(rentalEntity.getRentalId())).withRel("return");
+        return repository.save(rentalEntity).toResponseDTO().add(returnLink);
     }
 
     @Override

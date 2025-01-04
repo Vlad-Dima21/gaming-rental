@@ -37,109 +37,109 @@ services:
       - microservices-net
     restart: unless-stopped
 
-  config-service:
-    build:
-      context: ./services/config-server
-      dockerfile: Dockerfile
-    ports:
-      - 8888:8888
-    networks:
-      - microservices-net
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  discovery-service:
-    build:
-      context: ./services/discovery
-      dockerfile: Dockerfile
-    ports:
-      - 8761:8761
-    networks:
-      - microservices-net
-    depends_on:
-      config-service:
-        condition: service_healthy
-
-  client-service:
-    build:
-      context: ./services/client
-      dockerfile: Dockerfile
-    ports:
-      - 8090:8090
-    networks:
-      - microservices-net
-    depends_on:
-      zipkin:
-        condition: service_started
-      postgres:
-        condition: service_started
-      config-service:
-        condition: service_healthy
-      discovery-service:
-        condition: service_started
-
-  product-service:
-    build:
-      context: ./services/product
-      dockerfile: Dockerfile
-    ports:
-      - 8050:8050
-    networks:
-      - microservices-net
-    depends_on:
-      zipkin:
-        condition: service_started
-      postgres:
-        condition: service_started
-      config-service:
-        condition: service_healthy
-      discovery-service:
-        condition: service_started
-
-  rental-service:
-    build:
-      context: ./services/rental
-      dockerfile: Dockerfile
-    ports:
-      - 8070:8070
-    networks:
-      - microservices-net
-    depends_on:
-      zipkin:
-        condition: service_started
-      postgres:
-        condition: service_started
-      config-service:
-        condition: service_healthy
-      discovery-service:
-        condition: service_started
-
-  gateway-service:
-    build:
-      context: ./services/gateway
-      dockerfile: Dockerfile
-    ports:
-      - 8222:8222
-    networks:
-      - microservices-net
-    depends_on:
-      zipkin:
-        condition: service_started
-      postgres:
-        condition: service_started
-      config-service:
-        condition: service_healthy
-      discovery-service:
-        condition: service_started
-      client-service:
-        condition: service_started
-      product-service:
-        condition: service_started
-      rental-service:
-        condition: service_started
+#  config-service:
+#    build:
+#      context: ./services/config-server
+#      dockerfile: Dockerfile
+#    ports:
+#      - 8888:8888
+#    networks:
+#      - microservices-net
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#
+#  discovery-service:
+#    build:
+#      context: ./services/discovery
+#      dockerfile: Dockerfile
+#    ports:
+#      - 8761:8761
+#    networks:
+#      - microservices-net
+#    depends_on:
+#      config-service:
+#        condition: service_healthy
+#
+#  client-service:
+#    build:
+#      context: ./services/client
+#      dockerfile: Dockerfile
+#    ports:
+#      - 8090:8090
+#    networks:
+#      - microservices-net
+#    depends_on:
+#      zipkin:
+#        condition: service_started
+#      postgres:
+#        condition: service_started
+#      config-service:
+#        condition: service_healthy
+#      discovery-service:
+#        condition: service_started
+#
+#  product-service:
+#    build:
+#      context: ./services/product
+#      dockerfile: Dockerfile
+#    ports:
+#      - 8050:8050
+#    networks:
+#      - microservices-net
+#    depends_on:
+#      zipkin:
+#        condition: service_started
+#      postgres:
+#        condition: service_started
+#      config-service:
+#        condition: service_healthy
+#      discovery-service:
+#        condition: service_started
+#
+#  rental-service:
+#    build:
+#      context: ./services/rental
+#      dockerfile: Dockerfile
+#    ports:
+#      - 8070:8070
+#    networks:
+#      - microservices-net
+#    depends_on:
+#      zipkin:
+#        condition: service_started
+#      postgres:
+#        condition: service_started
+#      config-service:
+#        condition: service_healthy
+#      discovery-service:
+#        condition: service_started
+#
+#  gateway-service:
+#    build:
+#      context: ./services/gateway
+#      dockerfile: Dockerfile
+#    ports:
+#      - 8222:8222
+#    networks:
+#      - microservices-net
+#    depends_on:
+#      zipkin:
+#        condition: service_started
+#      postgres:
+#        condition: service_started
+#      config-service:
+#        condition: service_healthy
+#      discovery-service:
+#        condition: service_started
+#      client-service:
+#        condition: service_started
+#      product-service:
+#        condition: service_started
+#      rental-service:
+#        condition: service_started
 
 networks:
   microservices-net:

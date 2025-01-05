@@ -29,9 +29,6 @@ public class Client {
     @Column(nullable = false)
     private String clientPhone;
 
-    @Column(nullable = false)
-    private Long clientUserId;
-
     public Client(String clientName, String clientEmail, String clientPhone) {
         this.clientName = clientName;
         this.clientEmail = clientEmail;

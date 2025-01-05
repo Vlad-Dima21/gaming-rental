@@ -130,8 +130,9 @@ public class RentalServiceImpl implements RentalService {
             rental.getGameCopiesId().stream().map(gameCopyId -> new RentalGameCopy(rentalEntity, gameCopyId)).toList()
         );
 
-        var returnLink = linkTo(methodOn(RentalController.class).returnRental(rentalEntity.getRentalId())).withRel("return");
-        return repository.save(rentalEntity).toResponseDTO().add(returnLink);
+        var savedModel = repository.save(rentalEntity);
+        var returnLink = linkTo(methodOn(RentalController.class).returnRental(savedModel.getRentalId())).withRel("return");
+        return savedModel.toResponseDTO().add(returnLink);
     }
 
     @Override

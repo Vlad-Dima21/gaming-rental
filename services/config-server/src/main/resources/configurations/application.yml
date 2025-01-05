@@ -21,7 +21,7 @@ resilience4j:
       default:
         limit-for-period: 5
         limit-refresh-period: 10s
-        timeout-duration: 0s
+        timeout-duration: 5s
         allow-health-indicator-to-fail: true
         subscribe-for-events: true
         event-consumer-buffer-size: 50

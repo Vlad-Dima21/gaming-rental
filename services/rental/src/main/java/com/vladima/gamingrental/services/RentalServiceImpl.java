@@ -12,6 +12,7 @@ import com.vladima.gamingrental.helpers.SortDirection;
 import com.vladima.gamingrental.models.Rental;
 import com.vladima.gamingrental.models.RentalGameCopy;
 import com.vladima.gamingrental.repositories.RentalRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -82,6 +83,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    @CircuitBreaker(name = "rentalService", fallbackMethod = "getRentalsFallback")
     public PageableResponseDTO<RentalResponseDTO> getRentals(Long clientId, Long deviceId, Boolean returned, boolean pastDue, Integer page, SortDirection sort) {
         var pageRequest = PageRequest.of(page != null ? page - 1 : 0, PAGE_SIZE);
         if (clientId != null) getClientById(clientId);
@@ -92,6 +94,10 @@ public class RentalServiceImpl implements RentalService {
             var returnLink = rental.getRentalReturnDate() == null ? linkTo(methodOn(RentalController.class).returnRental(rental.getRentalId())).withRel("return") : null;
             return returnLink != null ? rental.toResponseDTO().add(returnLink) : rental.toResponseDTO();
         }).toList());
+    }
+
+    public PageableResponseDTO<RentalResponseDTO> getRentalsFallback(Long clientId, Long deviceId, Boolean returned, boolean pastDue, Integer page, SortDirection sort, Throwable throwable) {
+        return new PageableResponseDTO<>(0, List.of());
     }
 
     @Override

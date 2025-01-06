@@ -7,17 +7,50 @@ services:
     networks:
       - microservices-net
 
-  postgres:
-    container_name: ms-pg-sql
+  postgres-client:
+    container_name: ms-pg-sql-client
     image: postgres
     environment:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: client
           PGDATA: /var/lib/postgresql/data
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - postgres_client:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+  postgres-product:
+    container_name: ms-pg-sql-product
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: product
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - postgres_product:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+  postgres-rental:
+    container_name: ms-pg-sql-rental
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rental
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - postgres_rental:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
     networks:
       - microservices-net
     restart: unless-stopped
@@ -145,5 +178,7 @@ networks:
   microservices-net:
     driver: bridge
 volumes:
-  postgres:
+  postgres_client:
+  postgres_product:
+  postgres_rental:
   pgadmin:

@@ -1,12 +1,14 @@
 spring:
   profiles:
-    active: native
+    active: git
   application:
     name: config-server
   cloud:
     config:
       server:
-        native:
-          search-locations: classpath:/configurations
+        git:
+          uri: https://github.com/Vlad-Dima21/gaming-rental-config
+          clone-on-start: true
+          searchPaths: "*"
 server:
   port: 8888

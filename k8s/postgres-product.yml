@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-product
+spec:
+  serviceName: "postgres-product"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-product
+  template:
+    metadata:
+      labels:
+        app: postgres-product
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - vm1
+      containers:
+        - name: postgres-product
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "product"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              value: "postgres"
+          volumeMounts:
+            - name: postgres-product-storage
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-product-storage
+        labels:
+          app: postgres-product
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: "microk8s-hostpath"
+        resources:
+          requests:
+            storage: 10Gi
+        selector:
+          matchLabels:
+            app: postgres-product
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-product
+spec:
+  selector:
+    app: postgres-product
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

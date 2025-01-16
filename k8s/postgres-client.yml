@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-client
+spec:
+  serviceName: "postgres-client"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-client
+  template:
+    metadata:
+      labels:
+        app: postgres-client
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - vm1
+      containers:
+        - name: postgres-client
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "client"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              value: "postgres"
+          volumeMounts:
+            - name: postgres-client-storage
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-client-storage
+        labels:
+          app: postgres-client
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: "microk8s-hostpath"
+        resources:
+          requests:
+            storage: 10Gi
+        selector:
+          matchLabels:
+            app: postgres-client
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-client
+spec:
+  selector:
+    app: postgres-client
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

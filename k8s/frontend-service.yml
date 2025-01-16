@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-service
+  template:
+    metadata:
+      labels:
+        app: frontend-service
+    spec:
+      containers:
+        - name: frontend-service
+          image: vladdima21/gaming-rental-front:latest
+          imagePullPolicy: Always
+          env:
+            - name: API_URL
+              value: "http://gateway-service:8222/api"
+          ports:
+            - containerPort: 3000
+      #              hostPort: 3000
+      initContainers:
+        - name: wait-for-gateway-service
+          image: busybox
+          command: [ 'sh', '-c', 'until nc -z gateway-service 8222; do echo waiting for gateway-service; sleep 2; done;' ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  #  type: ClusterIP
+  type: LoadBalancer
+  loadBalancerIP: 192.168.0.175 # doar unul ca sa apelam direct serviciul
+  ports:
+    - port: 3000
+      targetPort: 3000
+      # nodePort: 30501
+  selector:
+    app: frontend-service

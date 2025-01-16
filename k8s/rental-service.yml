@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rental-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rental-service
+  template:
+    metadata:
+      labels:
+        app: rental-service
+    spec:
+      containers:
+        - name: rental-service
+          image: vladdima21/rental-service:latest
+          ports:
+            - containerPort: 8070
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: k8s
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "1Gi"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8070
+            initialDelaySeconds: 25
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8070
+            initialDelaySeconds: 40
+            periodSeconds: 5
+      initContainers:
+        - name: wait-for-config-server
+          image: busybox
+          command: [ 'sh', '-c', 'until nc -z config-server 8888; do echo waiting for config-server; sleep 2; done;' ]
+        - name: wait-for-postgres-rental
+          image: busybox
+          command: [ 'sh', '-c', 'until nc -z postgres-rental 5432; do echo waiting for postgres-rental; sleep 2; done;' ]
+        - name: wait-for-zipkin
+          image: busybox
+          command: [ 'sh', '-c', 'until nc -z zipkin 9411; do echo waiting for zipkin; sleep 2; done;' ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rental-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8070
+      targetPort: 8070
+  selector:
+    app: rental-service

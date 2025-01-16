@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-rental
+spec:
+  serviceName: "postgres-rental"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-rental
+  template:
+    metadata:
+      labels:
+        app: postgres-rental
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - vm1
+      containers:
+        - name: postgres-rental
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "rental"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              value: "postgres"
+          volumeMounts:
+            - name: postgres-rental-storage
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-rental-storage
+        labels:
+          app: postgres-rental
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: "microk8s-hostpath"
+        resources:
+          requests:
+            storage: 10Gi
+        selector:
+          matchLabels:
+            app: postgres-rental
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-rental
+spec:
+  selector:
+    app: postgres-rental
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

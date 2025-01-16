@@ -155,4 +155,9 @@ public class RentalServiceImpl implements RentalService {
         rental.setRentalReturnDate(LocalDateTime.now());
         return rental.toResponseDTO();
     }
+
+    @Override
+    public Boolean isDeviceAvailable(Long deviceId) {
+        return repository.isDeviceAvailable(deviceId);
+    }
 }

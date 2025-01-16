@@ -174,6 +174,18 @@ services:
       rental-service:
         condition: service_started
 
+  frontend-service:
+    build:
+      image: ./services/frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    networks:
+      - microservices-net
+    depends_on:
+      gateway-service:
+        condition: service_started
+
 networks:
   microservices-net:
     driver: bridge

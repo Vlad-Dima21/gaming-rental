@@ -133,4 +133,9 @@ public class RentalController {
     public ResponseEntity<RentalResponseDTO> returnRental(@PathVariable @Min(1) @Parameter(description = "Rental ID") Long id) {
         return new ResponseEntity<>(rentalService.rentalReturned(id), HttpStatus.OK);
     }
+
+    @GetMapping("/is-unit-available/{deviceId}")
+    public ResponseEntity<Boolean> isUnitAvailable(@PathVariable @Min(1) Long deviceId) {
+        return new ResponseEntity<>(rentalService.isDeviceAvailable(deviceId), HttpStatus.OK);
+    }
 }
